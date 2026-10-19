@@ -27,7 +27,7 @@ async function generateWithGemini(prompt) {
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: systemPrompt }] },
-      contents: [{ role: 'user', parts: [{ text: 'Build a first website implementation for this brief. Make it responsive, accessible and visually polished.\\n\\n' + prompt }] }],
+      contents: [{ role: 'user', parts: [{ text: 'Build a first website implementation for this brief. Make it responsive, accessible and visually polished.\n\n' + prompt }] }],
       generationConfig: { responseMimeType: 'application/json', maxOutputTokens: 4500, temperature: 0.3 }
     })
   });
@@ -49,7 +49,7 @@ async function generateWithAnthropic(prompt) {
       model: process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5-20251001',
       max_tokens: 4500,
       system: systemPrompt,
-      messages: [{ role: 'user', content: 'Build a first website implementation for this brief. Make it responsive, accessible and visually polished.\\n\\n' + prompt }]
+      messages: [{ role: 'user', content: 'Build a first website implementation for this brief. Make it responsive, accessible and visually polished.\n\n' + prompt }]
     })
   });
   const data = await response.json();
@@ -72,14 +72,14 @@ app.post('/api/generate', async (req, res) => {
   try {
     const output = aiProvider === 'gemini' ? await generateWithGemini(prompt) : await generateWithAnthropic(prompt);
     let project;
-    try { project = JSON.parse(output.replace(/^```(?:json)?\\s*/i, '').replace(/\\s*```$/, '')); }
+    try { project = JSON.parse(output.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '')); }
     catch { return res.status(502).json({ error: 'The AI response was not valid project JSON. Please retry.' }); }
     if (typeof project.name !== 'string' || !Array.isArray(project.files) || project.files.length > 5) {
       return res.status(502).json({ error: 'The AI response did not match the project format.' });
     }
     const files = project.files.filter(file => file && typeof file.path === 'string' && typeof file.content === 'string' &&
       file.path.length < 120 && !file.path.startsWith('/') && !file.path.split('/').includes('..') &&
-      !/^(package\\.json|.*\\.(env|sh|bat|exe))$/i.test(file.path))
+      !/^(package\.json|.*\.(env|sh|bat|exe))$/i.test(file.path))
       .map(file => ({ path: file.path, content: file.content.slice(0, 30000) }));
     if (!files.length) return res.status(502).json({ error: 'No valid project files were returned. Please retry.' });
     return res.json({ name: project.name.slice(0, 80), summary: typeof project.summary === 'string' ? project.summary.slice(0, 500) : '', files });
