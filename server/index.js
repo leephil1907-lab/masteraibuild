@@ -7,7 +7,7 @@ const app = express();
 const port = Number(process.env.PORT || 3001);
 app.disable('x-powered-by');
 app.use(helmet());
-app.use(cors({ origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',').map(v => v.trim()) : true }));
+if (process.env.CORS_ORIGIN) app.use(cors({ origin: process.env.CORS_ORIGIN.split(',').map(v => v.trim()) }));
 app.use(express.json({ limit: '32kb' }));
 app.use('/api/', rateLimit({ windowMs: 60_000, limit: 30, standardHeaders: true, legacyHeaders: false }));
 
