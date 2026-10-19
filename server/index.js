@@ -4,7 +4,6 @@ import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 
 const app = express();
-const port = Number(process.env.PORT || 3001);
 app.disable('x-powered-by');
 app.use(helmet());
 if (process.env.CORS_ORIGIN) app.use(cors({ origin: process.env.CORS_ORIGIN.split(',').map(v => v.trim()) }));
@@ -92,12 +91,4 @@ app.post('/api/generate', async (req, res) => {
 
 app.use('/api', (_req, res) => res.status(404).json({ error: 'API route not found.' }));
 
-if (process.env.NODE_ENV === 'production') {
-  const path = await import('node:path');
-  const { fileURLToPath } = await import('node:url');
-  const root = path.dirname(fileURLToPath(import.meta.url));
-  app.use(express.static(path.resolve(root, '../dist')));
-  app.get('*', (_req, res) => res.sendFile(path.resolve(root, '../dist/index.html')));
-}
-
-app.listen(port, '0.0.0.0', () => console.log('MasterStudio AI API listening on port ' + port));
+export default app;
