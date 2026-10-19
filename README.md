@@ -10,11 +10,6 @@ MasterStudio AI is an AI-assisted website-building workspace. This repository is
 - Basic request size limits, rate limiting, and security headers
 - Browser-local storage for generated project drafts and ZIP export
 
-## Requirements
-
-- Node.js 20 or newer
-- A supported AI provider API key for generation. Google AI Studio offers a free tier for eligible models, subject to quotas and its data-use terms.
-
 ## Run locally
 
 1. Install dependencies: `npm install`
@@ -24,27 +19,26 @@ MasterStudio AI is an AI-assisted website-building workspace. This repository is
 
 The frontend proxies `/api` requests to Express on port 3001 during local development.
 
+## Deploy on Vercel
+
+1. First revoke any API key that was pasted into a chat or committed publicly, then create a replacement.
+2. Open Vercel and import `leephil1907-lab/masteraibuild` from GitHub.
+3. Keep the build command as `npm run build` and output directory as `dist`.
+4. In Project Settings → Environment Variables, add `AI_PROVIDER=gemini` and `GEMINI_API_KEY` with your new secret key. Add them to Production and Preview as needed.
+5. Deploy or redeploy after adding the environment variables.
+
+Vercel serves the Vite build as static output and routes API requests through `api/[...path].js`. The API key stays server-side. See the official Vercel documentation for environment variables and Express deployments.
+
 ## Environment variables
 
-- `AI_PROVIDER`: `gemini` or `anthropic`; if omitted, the server selects a provider based on which key is configured.
-- `GEMINI_API_KEY`: server-only Google AI Studio key; never put it in a `VITE_*` variable or commit it.
+- `AI_PROVIDER`: `gemini` or `anthropic`; if omitted, the server selects based on configured keys.
+- `GEMINI_API_KEY`: server-only Google AI Studio key; never use a `VITE_` prefix or commit it.
 - `GEMINI_MODEL`: optional Gemini model override; defaults to `gemini-2.5-flash`.
 - `ANTHROPIC_API_KEY`: optional server-only alternative provider key.
 - `ANTHROPIC_MODEL`: optional Anthropic model override.
 - `CORS_ORIGIN`: optional comma-separated allowed origins for the API.
-- `PORT`: optional server port, provided automatically by many hosting platforms.
-- `NODE_ENV=production`: serves the built frontend from Express.
-
-## Production build
-
-```sh
-npm install
-npm run build
-NODE_ENV=production npm start
-```
-
-For Render, use build command `npm install && npm run build` and start command `npm start`. Add `GEMINI_API_KEY` and `AI_PROVIDER=gemini` in the hosting provider's environment settings. Do not commit secrets to GitHub.
+- `PORT`: local Express server port.
 
 ## Honest status / next milestones
 
-The repository is an early scaffold. Account authentication, a database, durable cloud project storage, isolated build-and-preview, secure code execution, GitHub export, and automated deployment are not yet implemented. Generated files are saved to browser local storage on the device that created them and ZIP export has not yet been build-tested. Treat generated code as unreviewed until it has been tested.
+The repository is an early scaffold. Account authentication, a database, durable cloud project storage, isolated build-and-preview, secure code execution, GitHub export, and automated deployment are not yet implemented. Generated files are saved to browser local storage on the device that created them. The ZIP export and Vercel deployment have not been verified yet. Treat generated code as unreviewed until tested.
