@@ -1,35 +1,47 @@
 # MasterStudio AI
 
-MasterStudio AI is a workspace for turning natural-language instructions into real, editable web projects. The initial milestone is a functional AI website-builder MVP; agent studio, templates, marketplace, and one-click deployment are later milestones.
+MasterStudio AI is an AI-assisted website-building workspace. This repository is an early application scaffold, not a finished production platform.
 
-## Product principles
+## Current foundation
 
-- Build a multi-page application, not a static landing page.
-- Prioritize working project creation, file editing, preview, and export over decorative UI.
-- Keep model API keys on the server; never expose secrets in browser code or commit them to Git.
-- Clearly distinguish implemented features from planned integrations.
-- Validate generated code in an isolated environment before enabling execution or preview.
+- React, TypeScript, Vite, and responsive workspace UI
+- Express API with health endpoint and initial AI-generation endpoint
+- Server-side Anthropic API integration; the API key stays on the server
+- Basic request size limits, rate limiting, and security headers
+- Browser-local storage for generated project drafts
 
-## Planned stack
+## Requirements
 
-- Frontend: React, Vite, TypeScript
-- Backend: Node.js, Express, TypeScript
-- Database: PostgreSQL (introduced with authentication and persistence)
-- AI: provider adapter on the server, configured with environment variables
-- Deployment: Render for the API and Vercel or Render for the frontend
+- Node.js 20 or newer
+- An Anthropic API key to use AI generation
 
-## MVP milestones
+## Run locally
 
-1. Establish the app shell, responsive dashboard, and project workspace.
-2. Add project CRUD and persistent storage.
-3. Add secure server-side AI generation and iterative edit requests.
-4. Add file tree, code editor, preview sandbox, and ZIP export.
-5. Add authentication, GitHub integration, and deployment workflows.
+1. Install dependencies: `npm install`
+2. Copy `.env.example` to `.env` and add your API key.
+3. Start frontend and backend: `npm run dev`
+4. Open the Vite address shown in the terminal (usually `http://localhost:5173`).
 
-## Local development
+The frontend proxies `/api` requests to Express on port 3001 during local development.
 
-Setup instructions will be added as the application scaffold lands. Never commit `.env` files or API keys. Use `.env.example` for variable names only.
+## Environment variables
 
-## Status
+- `ANTHROPIC_API_KEY`: server-only provider secret; never put it in a `VITE_*` variable or commit it.
+- `ANTHROPIC_MODEL`: optional model override; defaults to `claude-haiku-4-5-20251001`.
+- `CORS_ORIGIN`: optional comma-separated allowed origins for the API.
+- `PORT`: optional server port, provided automatically by many hosting platforms.
+- `NODE_ENV=production`: serves the built frontend from Express.
 
-Repository initialized. Features should be marked complete only after they are implemented and tested.
+## Production build
+
+```sh
+npm install
+npm run build
+NODE_ENV=production npm start
+```
+
+For Render, use build command `npm install && npm run build` and start command `npm start`. Add `ANTHROPIC_API_KEY` in the hosting provider's environment settings. Do not commit secrets to GitHub.
+
+## Honest status / next milestones
+
+This early scaffold does not yet include account authentication, a database, durable cloud project storage, an isolated build-and-preview runtime, downloadable project archives, GitHub export, or automated deployment. Generated files are currently saved to browser local storage on the device that created them. Do not treat generated code as reviewed or production-ready without testing it.
