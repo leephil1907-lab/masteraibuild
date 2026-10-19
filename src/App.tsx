@@ -3,14 +3,19 @@ import { Activity, ArrowRight, Bot, Box, Braces, CircleHelp, Command, Globe2, La
 import { motion } from 'framer-motion';
 
 type Project = { id: number; name: string; kind: string };
-const initialProjects: Project[] = [
-  { id: 1, name: 'Northstar Studio', kind: 'Portfolio website' },
-  { id: 2, name: 'Orbit Commerce', kind: 'E-commerce experience' },
-  { id: 3, name: 'Pulse Analytics', kind: 'SaaS dashboard' }
-];
+function loadProjects(): Project[] {
+  try {
+    const saved = JSON.parse(localStorage.getItem('masterstudio-projects') || '[]');
+    if (!Array.isArray(saved)) return [];
+    return saved.filter(item => item && typeof item.id === 'number' && typeof item.name === 'string')
+      .map(item => ({ id: item.id, name: item.name, kind: typeof item.kind === 'string' ? item.kind : 'Web project' }));
+  } catch {
+    return [];
+  }
+}
 
 export default function App() {
-  const [projects, setProjects] = useState(initialProjects);
+  const [projects, setProjects] = useState<Project[]>(loadProjects);
   const [prompt, setPrompt] = useState('');
   const [search, setSearch] = useState('');
   const [active, setActive] = useState('Overview');
