@@ -8,8 +8,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "dev:client": "vite --host 0.0.0.0",
-    "dev:server": "node --watch server/index.js",
-    "start": "node server/index.js"
+    "dev:server": "node --watch server/local.js",
+    "start": "node server/local.js"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",
