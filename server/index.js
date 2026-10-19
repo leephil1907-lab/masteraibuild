@@ -27,7 +27,7 @@ app.post('/api/generate', async (req, res) => {
       method: 'POST',
       headers: { 'content-type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
       body: JSON.stringify({
-        model: process.env.ANTHROPIC_MODEL || 'claude-3-5-haiku-latest',
+        model: process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5-20251001',
         max_tokens: 4500,
         system: 'You are a web app generator. Return only valid JSON matching {"name":"short name","summary":"short summary","files":[{"path":"src/App.tsx","content":"complete file content"}]}. Generate a small responsive React + TypeScript website starter. Return at most 5 text files. Do not include package files, server files, secrets, or shell scripts.',
         messages: [{ role: 'user', content: 'Build a first website implementation for this brief. Make it responsive, accessible and visually polished.\n\n' + prompt }]
